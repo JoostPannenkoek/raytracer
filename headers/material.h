@@ -56,4 +56,37 @@ class metal : public material {
       double fuzz;
 };
 
+class glass : public material {
+   public:
+      glass(color albedo, double refractiveIndex) : albedo(albedo), refractiveIndex(refractiveIndex) {}
+      bool scatter(const ray& rIn, const hit_record& rec, color& attenuation, ray& scattered)
+      const override {
+         attenuation = albedo;
+         double etaOverEtaPrime = rec.frontFacing ? (1.0/refractiveIndex) : refractiveIndex;
+         vec3 unitDir = unit_vector(rIn.direction());
+         double cosTheta = fmin(dot(-unitDir, rec.normal), 1.0);
+         double sinTheta = sqrt(1.0 - (cosTheta*cosTheta));
+
+         vec3 rOut;
+         bool canRefract = sinTheta * etaOverEtaPrime < 1.0;
+         if (!canRefract || schliksReflectance(cosTheta, etaOverEtaPrime) > random_double()) {
+            rOut = reflect(rIn.direction(), rec.normal);
+         } else {
+            rOut = refract(unitDir, rec.normal, etaOverEtaPrime);
+         }
+         
+         scattered = ray(rec.p, rOut);
+         return true;
+      }
+   private:
+      double refractiveIndex;
+      color albedo;
+
+      static double schliksReflectance(double cosTheta, double refractiveIndex) {
+         auto r0 = (1-refractiveIndex) / (1+refractiveIndex);
+         r0 *= r0;
+         return r0 + (1-r0)*pow((1-cosTheta),5);
+      }
+};
+
 #endif

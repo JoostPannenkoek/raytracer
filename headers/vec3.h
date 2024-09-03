@@ -130,4 +130,11 @@ inline vec3 reflect(const vec3& v, const vec3&n) {
    return reflected;
 }
 
+inline vec3 refract(const vec3& in, const vec3& n, double etaOverEtaPrime) {
+   double cosTheta = fmin(dot(-in, n), 1.0);
+   vec3 outPerp = etaOverEtaPrime * (in + (cosTheta * n));
+   vec3 outParralel = - sqrt(fabs(1.0-outPerp.length_squared())) * n;
+   return outPerp + outParralel;
+}
+
 #endif
