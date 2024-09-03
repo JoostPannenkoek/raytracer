@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/jorto/raytracer",
-      "program": "/home/jorto/raytracer/build/Debug/outDebug",
+      "cwd": "/home/jorto/raytracer/raytracer",
+      "program": "/home/jorto/raytracer/raytracer/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
